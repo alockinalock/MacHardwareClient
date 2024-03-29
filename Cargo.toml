@@ -1,0 +1,18 @@
+[package]
+name = "MacHardwareClient"
+version = "0.1.0"
+description = "REV Hardware Client for macOS"
+authors = ["Andrew Zhang <kanjigawa@gmail.com>"]
+homepage = ""
+repository = ""
+license = "MIT"
+edition = "2021"
+
+[dependencies]
+gtk = { package = "gtk4", version = "0.8.1", features = ["v4_12"] }
+
+serde_json = "1.0"
+rusb = "0.9.3"
+anyhow = "1.0"
+
+human-panic = "1.2.2"
