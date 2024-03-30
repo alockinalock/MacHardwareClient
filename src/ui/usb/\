@@ -1,0 +1,46 @@
+use rusb::{
+    Context, Device, DeviceDescriptor, DeviceHandle, DeviceList, Error, Language, UsbContext,
+};
+use std::time::Duration;
+
+pub fn usb_detect_all() -> Result<Vec<(u16, u16)>, rusb::Error> {
+    let context = Context::new()?;
+
+    let device_list = context.devices()?;
+    let mut devices_info = Vec::new();
+
+    for device in device_list.iter() {
+        let handle_device = device.open()?;
+        let device_info = get_device_info(&handle_device)?;
+        devices_info.push(device_info);
+    }
+
+    Ok(devices_info)
+}
+
+fn get_device_info<T: UsbContext>(handle: &DeviceHandle<T>) -> Result<(u8, Language), rusb::Error> {
+    let device_desc = handle.device().device_descriptor()?;
+    let timeout = Duration::from_secs(1);
+    let languages = handle.read_languages(timeout)?;
+
+    let active_configurations = handle.active_configuration()?;
+    let (manufacturer, product, serial_number) = "Not Found".to_string();
+    let language;
+
+    if !languages.is_empty() {
+        language = languages[0];
+        manufacturer = handle
+            .read_manufacturer_string(language, &device_desc, timeout)
+            .unwrap_or("Not Found".to_string());
+        product = handle.read_product_string(language, &device_desc, timeout).unwrap_or("Not Found".to_string());
+        serial_number = handle.read_serial_number_string(language, &device_desc, timeout).unwrap_or("Not Found".to_string());
+    }
+
+    Ok(
+        active_configurations,
+        language,
+        manufacturer,
+        product,
+        serial_number,
+    )
+}
