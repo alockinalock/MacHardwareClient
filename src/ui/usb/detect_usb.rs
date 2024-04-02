@@ -19,6 +19,16 @@ pub fn usb_detect_all() -> Result<Vec<(u8, String, String, String)>, rusb::Error
     Ok(devices_info)
 }
 
+pub fn detect_control_hub(information: (u8, String, String, String)) -> bool {
+    let manufacturer = information.1;
+    let product = information.2;
+
+    if (manufacturer == "REV Robotics" && product == "Control Hub v1.0") {
+        return true;
+    }
+    return false;
+}
+
 fn get_device_info<T: UsbContext>(
     handle: &DeviceHandle<T>,
 ) -> Result<(u8, String, String, String), rusb::Error> {

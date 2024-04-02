@@ -6,6 +6,8 @@ pub mod ui;
 
 use ui::usb::*;
 
+use crate::detect_usb::detect_control_hub;
+
 fn main() -> anyhow::Result<()> {
     // custom panic handler setup
     human_panic::setup_panic!(human_panic::metadata!());
@@ -17,6 +19,7 @@ fn main() -> anyhow::Result<()> {
 
         for device in devices {
             println!("{:?}", device);
+            println!("{}", detect_control_hub(device));
         }
     } else {
         eprintln!("Unable to detect USB devices.");
