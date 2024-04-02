@@ -23,7 +23,7 @@ pub fn detect_control_hub(information: (u8, String, String, String)) -> bool {
     let manufacturer = information.1.to_lowercase();
     let product = information.2.to_lowercase();
 
-    return manufacturer == "rev robotics" && product.starts_with("control hub");
+    manufacturer == "rev robotics" && product.starts_with("control hub")
 }
 
 fn get_device_info<T: UsbContext>(
