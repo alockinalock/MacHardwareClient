@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use relm4::prelude::*;
 
@@ -7,6 +8,18 @@ pub mod ui;
 use ui::usb::*;
 
 use crate::detect_usb::detect_control_hub;
+
+// when app component init is done (fully initialized), set to true
+pub static READY: AtomicBool = AtomicBool::new(false);
+
+// check if app is ready
+pub fn is_ready() {
+    READY.load(Ordering::Relaxed);
+}
+
+lazy_static::lazy_static! {
+    static ref GLOBAL_CSS: String = format!("");
+}
 
 fn main() -> anyhow::Result<()> {
     // custom panic handler setup
@@ -22,7 +35,7 @@ fn main() -> anyhow::Result<()> {
             println!("{}", detect_control_hub(device));
         }
     } else {
-        eprintln!("Unable to detect USB devices.");
+        println!("Unable to detect USB devices.");
     }
 
     Ok(())

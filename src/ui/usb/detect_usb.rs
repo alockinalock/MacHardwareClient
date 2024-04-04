@@ -1,7 +1,4 @@
-use rusb::{
-    Context, Device, DeviceDescriptor, DeviceHandle, DeviceList, Error, Language, PrimaryLanguage,
-    UsbContext,
-};
+use rusb::{Context, DeviceHandle, UsbContext};
 use std::time::Duration;
 
 pub fn usb_detect_all() -> Result<Vec<(u8, String, String, String)>, rusb::Error> {
@@ -33,7 +30,7 @@ fn get_device_info<T: UsbContext>(
     let timeout = Duration::from_secs(1);
     let languages = handle.read_languages(timeout)?;
 
-    let active_configurations = handle.active_configuration()?;
+    let active_configurations: u8 = handle.active_configuration()?;
     let manufacturer: String;
     let product: String;
     let serial_number: String;
